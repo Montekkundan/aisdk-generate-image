@@ -1,6 +1,39 @@
 "use client";
 
-import type { UseChatHelpers } from "@ai-sdk/react";
+import type { ChatStatus, FileUIPart } from "ai";
+import {
+  CornerDownLeftIcon,
+  ImageIcon,
+  Loader2Icon,
+  MicIcon,
+  PaperclipIcon,
+  PlusIcon,
+  SquareIcon,
+  XIcon,
+} from "lucide-react";
+import { nanoid } from "nanoid";
+import {
+  type ChangeEvent,
+  type ChangeEventHandler,
+  Children,
+  type ClipboardEventHandler,
+  type ComponentProps,
+  createContext,
+  type FormEvent,
+  type FormEventHandler,
+  Fragment,
+  type HTMLAttributes,
+  type KeyboardEventHandler,
+  type PropsWithChildren,
+  type ReactNode,
+  type RefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -36,40 +69,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import type { ChatStatus, FileUIPart } from "ai";
-import {
-  CornerDownLeftIcon,
-  ImageIcon,
-  Loader2Icon,
-  MicIcon,
-  PaperclipIcon,
-  PlusIcon,
-  SquareIcon,
-  XIcon,
-} from "lucide-react";
-import { nanoid } from "nanoid";
-import {
-  type ChangeEvent,
-  type ChangeEventHandler,
-  Children,
-  type ClipboardEventHandler,
-  type ComponentProps,
-  createContext,
-  type FormEvent,
-  type FormEventHandler,
-  Fragment,
-  type HTMLAttributes,
-  type KeyboardEventHandler,
-  type PropsWithChildren,
-  type ReactNode,
-  type RefObject,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
 
 // ============================================================================
 // Provider Context & Types
@@ -413,7 +412,10 @@ export const PromptInputActionAddAttachments = ({
   );
 };
 
-export type PromptInputMessage = UseChatHelpers<never>["sendMessage"];
+export type PromptInputMessage = {
+  text: string;
+  files: FileUIPart[];
+};
 
 export type PromptInputProps = Omit<
   HTMLAttributes<HTMLFormElement>,
@@ -706,10 +708,12 @@ export const PromptInput = ({
       })
     ).then((convertedFiles: FileUIPart[]) => {
       try {
-  // onSubmit expects the message shape provided by UseChatHelpers["sendMessage"].
-  // Construct the object and cast to the expected type to satisfy TypeScript.
-  const message = { text, files: convertedFiles } as unknown as PromptInputMessage;
-  const result = onSubmit(message, event);
+        // Construct the message object matching PromptInputMessage type
+        const message: PromptInputMessage = {
+          text,
+          files: convertedFiles,
+        };
+        const result = onSubmit(message, event);
 
         // Handle both sync and async onSubmit
         if (result instanceof Promise) {
@@ -1010,9 +1014,9 @@ export const PromptInputSubmit = ({
 
   return (
     <InputGroupButton
-      onClick={status === 'streaming' ? stop : undefined}
       aria-label="Submit"
       className={cn(className)}
+      onClick={status === "streaming" ? stop : undefined}
       size={size}
       type="submit"
       variant={variant}

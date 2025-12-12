@@ -1,16 +1,19 @@
-# Minimal chat template
+# Generate Image with Chat Prompt
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FMontekkundan%2Fchat-template&env=AI_GATEWAY_API_KEY)
+This example demonstrates how to use the [AI SDK](https://sdk.vercel.ai/docs) to generate images from chat prompts.
 
-this chat template is created for testing the AI SDK capabilities.
+Based on the [Generate Image with Chat Prompt](https://ai-sdk.dev/cookbook/next/generate-image-with-chat-prompt) cookbook.
 
-- clone the repo
+## Getting Started
 
-- Add you `AI_GATEWAY_KEY` in the .env file
-
-- run:
-
+1. Clone the repository
+2. Install dependencies:
 ```bash
-bun install
-bun dev
+npm install
 ```
+3. Run the development server:
+```bash
+npm run dev
+```
+4. Open [http://localhost:3000](http://localhost:3000) with your browser.
+5. Enter your OpenAI API Key in the settings.
